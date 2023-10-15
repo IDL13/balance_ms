@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "api/";
+
+service Balance_ms {
+  rpc AddBalance(AddBalanceRequest) returns (AddBalanceResponse) {}
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse) {}
+  rpc Reserve(ReserveRequest) returns (ReserveResponse) {}
+  rpc GetRevenue(GetRevenueRequest) returns (GetRevenueResponse) {}
+}
+
+message AddBalanceRequest {
+  int64 id = 1;
+  int64 money = 2;
+}
+
+message AddBalanceResponse {
+  int32 status = 1;
+}
+
+message GetBalanceRequest {
+  int64 id = 1;
+}
+
+message GetBalanceResponse {
+  int64 balance = 1;
+}
+
+message ReserveRequest {
+  int64 id = 1;
+  int64 idService = 2;
+  int64 idOrder = 3;
+  int64 money = 4;
+}
+
+message ReserveResponse {
+  int64 status = 1;
+}
+
+message GetRevenueRequest {
+
+}
+
+message GetRevenueResponse {
+  int32 status = 1;
+}
