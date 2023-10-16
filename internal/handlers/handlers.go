@@ -17,7 +17,7 @@ func (s *GRPCServer) AddBalance(ctx context.Context, req *api.AddBalanceRequest)
 
 // GetBalance ...
 func (s *GRPCServer) GetBalance(context.Context, *api.GetBalanceRequest) (*api.GetBalanceResponse, error) {
-	return &api.GetBalanceResponse{Balance: 100}, nil
+	return &api.GetBalanceResponse{Balance: "100"}, nil
 }
 
 // Reserve ...
