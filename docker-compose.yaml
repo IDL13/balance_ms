@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  balance_ms:
+    build: ./
+    command: ./balance_ms
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgres:14.3-alpine
+    ports:
+      - "3305:3305"
+    environment:
+      - POSTGRES_PASSWORD = echo
+      - POSTGRES_USER = echo

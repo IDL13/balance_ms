@@ -1,0 +1,11 @@
+username: "echo"
+password: "echo"
+host: "127.0.0.1"
+port: "3305"
+databases: "main"
+
+#username: "echo"
+#password: "echo"
+#host: "172.26.0.1"
+#port: "3305"
+#databases: "main"
