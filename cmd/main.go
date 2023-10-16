@@ -10,5 +10,4 @@ func main() {
 	s := grpc.NewServer()
 	srv := &handlers.GRPCServer{}
 	api.RegisterBalanceMsServer(s, srv)
-
 }

@@ -13,7 +13,7 @@ service Balance_ms {
 
 message AddBalanceRequest {
   int64 id = 1;
-  int64 money = 2;
+  string money = 2;
 }
 
 message AddBalanceResponse {
@@ -25,14 +25,14 @@ message GetBalanceRequest {
 }
 
 message GetBalanceResponse {
-  int64 balance = 1;
+  string balance = 1;
 }
 
 message ReserveRequest {
   int64 id = 1;
-  int64 idService = 2;
-  int64 idOrder = 3;
-  int64 money = 4;
+  string idService = 2;
+  string idOrder = 3;
+  string money = 4;
 }
 
 message ReserveResponse {
