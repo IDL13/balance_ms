@@ -7,6 +7,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+func New() *Config {
+	return &Config{}
+}
+
 type Config struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
@@ -15,8 +19,7 @@ type Config struct {
 	Database string `yaml:"database"`
 }
 
-func GetConf() *Config {
-	c := &Config{}
+func (c *Config) GetConf() *Config {
 	info, err := os.ReadFile("./../conf.yaml")
 	if err != nil {
 		log.Fatal(err)

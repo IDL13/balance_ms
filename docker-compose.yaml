@@ -15,5 +15,5 @@ services:
     ports:
       - "3305:3305"
     environment:
-      - POSTGRES_PASSWORD = echo
-      - POSTGRES_USER = echo
+      POSTGRES_PASSWORD: "echo"
+      POSTGRES_USER: "echo"
