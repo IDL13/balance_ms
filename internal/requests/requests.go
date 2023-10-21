@@ -3,6 +3,7 @@ package requests
 import (
 	"context"
 	"fmt"
+	"github.com/IDL13/balance_ms/internal/CSV"
 	"github.com/IDL13/balance_ms/internal/config"
 	"github.com/IDL13/balance_ms/pkg/postgresql"
 	"os"
@@ -12,6 +13,13 @@ func New() *Request {
 	return &Request{
 		conf: config.New(),
 	}
+}
+
+type DataStruct struct {
+	Id        int
+	idService string
+	idOrder   string
+	money     string
 }
 
 type Request struct {
@@ -58,7 +66,27 @@ func (r *Request) CreateReserveTableRequest() error {
 	return nil
 }
 
-func (r *Request) AddBalanceRequest(id int) (balance string, err error) {
+func (r *Request) AddBalanceRequest(id int64, balance string) (err error) {
+	conf := r.conf.GetConf()
+
+	conn, err := postgresql.NewClient(*conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
+		os.Exit(1)
+	}
+
+	q := `INSERT INTO Users (Id, balance) VALUES ($, $)`
+
+	_, err = conn.Exec(context.Background(), q, balance)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
+		os.Exit(1)
+	}
+
+	return nil
+}
+
+func (r *Request) GetBalanceRequest(balance string) (b string, err error) {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -79,11 +107,27 @@ func (r *Request) AddBalanceRequest(id int) (balance string, err error) {
 	return balance, nil
 }
 
-func (r *Request) GetBalanceRequest() {}
+func (r *Request) AddReserveRequest(id int, idService, idOrder, money string) error {
+	conf := r.conf.GetConf()
 
-func (r *Request) AddReserveRequest() {}
+	conn, err := postgresql.NewClient(*conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
+		os.Exit(1)
+	}
 
-func (r *Request) GetReserveRequest() error {
+	q := `INSERT INTO Reserve (Id, idService, idOrder, money) VALUES ($, $))`
+
+	_, err = conn.Exec(context.Background(), q)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
+		os.Exit(1)
+	}
+
+	return nil
+}
+
+func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -100,14 +144,8 @@ func (r *Request) GetReserveRequest() error {
 		os.Exit(1)
 	}
 
-	type DataStruct struct {
-		Id        int
-		idService string
-		idOrder   string
-		money     string
-	}
-
 	var d DataStruct
+	var request []DataStruct
 
 	for row.Next() {
 		err = row.Scan(&d.Id, &d.idService, &d.idOrder)
@@ -115,8 +153,16 @@ func (r *Request) GetReserveRequest() error {
 			fmt.Fprintf(os.Stderr, "Error when trying to write data in struct line 115:%e", err)
 			os.Exit(1)
 		}
+		var record []string
+		record = append(record, d.idService, d.money, TimeNow())
+		err = CSV.WriteInCSV(record)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when trying to write data in CSV file")
+			os.Exit(1)
+		}
 
+		request = append(request, d)
 	}
 
-	return nil
+	return request, nil
 }

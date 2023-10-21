@@ -2,16 +2,25 @@ package handlers
 
 import (
 	"context"
+	"fmt"
+	"github.com/IDL13/balance_ms/internal/requests"
 	"github.com/IDL13/balance_ms/pkg/api"
+	"os"
 )
 
 // GRPCServer ...
 type GRPCServer struct {
 	api.UnimplementedBalanceMsServer
+	request requests.Request
 }
 
 // AddBalance ...
 func (s *GRPCServer) AddBalance(ctx context.Context, req *api.AddBalanceRequest) (*api.AddBalanceResponse, error) {
+	err := s.request.AddBalanceRequest(req.Id, req.Money)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error the during execut AddBalance request")
+		panic(err)
+	}
 	return &api.AddBalanceResponse{Status: 0}, nil
 }
 

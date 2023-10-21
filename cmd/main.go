@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/IDL13/balance_ms/internal/CSV"
 	"github.com/IDL13/balance_ms/internal/handlers"
 	"github.com/IDL13/balance_ms/pkg/api"
 	"google.golang.org/grpc"
@@ -23,5 +24,9 @@ func main() {
 
 	if err := s.Serve(listen); err != nil {
 		log.Fatal(err)
+	} else {
+		if err = CSV.CreateCSV(); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
