@@ -25,12 +25,22 @@ func (s *GRPCServer) AddBalance(ctx context.Context, req *api.AddBalanceRequest)
 }
 
 // GetBalance ...
-func (s *GRPCServer) GetBalance(context.Context, *api.GetBalanceRequest) (*api.GetBalanceResponse, error) {
-	return &api.GetBalanceResponse{Balance: "100"}, nil
+func (s *GRPCServer) GetBalance(ctx context.Context, req *api.GetBalanceRequest) (*api.GetBalanceResponse, error) {
+	balance, err := s.request.GetBalanceRequest(req.Id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error the during execut AddGetBalance request")
+		panic(err)
+	}
+	return &api.GetBalanceResponse{Balance: balance}, nil
 }
 
 // Reserve ...
-func (s *GRPCServer) Reserve(context.Context, *api.ReserveRequest) (*api.ReserveResponse, error) {
+func (s *GRPCServer) Reserve(ctx context.Context, req *api.ReserveRequest) (*api.ReserveResponse, error) {
+	err := s.request.AddReserveRequest(req.Id, req.IdService, req.IdOrder, req.Money)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error the during execut AddReserve request")
+		panic(err)
+	}
 	return &api.ReserveResponse{Status: 0}, nil
 }
 
