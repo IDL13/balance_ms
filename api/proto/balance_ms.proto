@@ -44,5 +44,6 @@ message GetRevenueRequest {
 }
 
 message GetRevenueResponse {
+  repeated string ans = 5;
   int32 status = 1;
 }

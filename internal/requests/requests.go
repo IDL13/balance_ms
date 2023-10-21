@@ -17,9 +17,9 @@ func New() *Request {
 
 type DataStruct struct {
 	Id        int
-	idService string
-	idOrder   string
-	money     string
+	IdService string
+	IdOrder   string
+	Money     string
 }
 
 type Request struct {
@@ -150,13 +150,13 @@ func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
 	var request []DataStruct
 
 	for row.Next() {
-		err = row.Scan(&d.Id, &d.idService, &d.idOrder)
+		err = row.Scan(&d.Id, &d.IdService, &d.IdOrder)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error when trying to write data in struct line 115:%e", err)
 			os.Exit(1)
 		}
 		var record []string
-		record = append(record, d.idService, d.money, TimeNow())
+		record = append(record, d.IdService, d.Money, TimeNow())
 		err = CSV.WriteInCSV(record)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error when trying to write data in CSV file")

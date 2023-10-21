@@ -46,7 +46,18 @@ func (s *GRPCServer) Reserve(ctx context.Context, req *api.ReserveRequest) (*api
 
 // GetRevenue ...
 func (s *GRPCServer) GetRevenue(context.Context, *api.GetRevenueRequest) (*api.GetRevenueResponse, error) {
-	return &api.GetRevenueResponse{Status: 0}, nil
+	re, err := s.request.GetReserveRequest()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error the during execut AddReserve request")
+		panic(err)
+	}
+	var info []string
+	for i := 0; i < len(re); i++ {
+		str := fmt.Sprintf("Id: %d; IdService: %s; IdOrder: %s; money: %s", re[i].Id, re[i].IdService, re[i].IdOrder, re[i].Money)
+		info = append(info, str)
+	}
+
+	return &api.GetRevenueResponse{Ans: info, Status: 0}, nil
 }
 
 // mustEmbedUnimplementedBalanceMsServer ...
