@@ -16,7 +16,18 @@ func main() {
 	srv := &handlers.GRPCServer{}
 	api.RegisterBalanceMsServer(s, srv)
 
-	listen, err := net.Listen("tcp", ":8080")
+	fmt.Println(`
+╔══╗╔══╗─╔╗───╔╗╔══╗
+╚╗╔╝║╔╗╚╗║║──╔╝║╚═╗║
+─║║─║║╚╗║║║──╚╗║╔═╝║
+─║║─║║─║║║║───║║╚═╗║
+╔╝╚╗║╚═╝║║╚═╗─║║╔═╝║
+╚══╝╚═══╝╚══╝─╚╝╚══╝
+	`)
+	fmt.Println("[SERVER STARTED]")
+	fmt.Println("http://127.0.0.1:8085")
+
+	listen, err := net.Listen("tcp", ":8085")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error from listen server: %e", err)
 		os.Exit(1)

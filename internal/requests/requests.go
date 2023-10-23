@@ -75,9 +75,9 @@ func (r *Request) AddBalanceRequest(id int64, balance string) (err error) {
 		os.Exit(1)
 	}
 
-	q := `INSERT INTO Users (Id, balance) VALUES ($, $)`
+	q := `INSERT INTO Users (Id, balance) VALUES ($1, $2)`
 
-	_, err = conn.Exec(context.Background(), q, balance)
+	_, err = conn.Exec(context.Background(), q, id, balance)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
 		os.Exit(1)
@@ -97,7 +97,7 @@ func (r *Request) GetBalanceRequest(id int64) (b string, err error) {
 		os.Exit(1)
 	}
 
-	q := `SELECT balance FROM Users WHERE Id = $`
+	q := `SELECT balance FROM Users WHERE Id = $1`
 
 	row, err := conn.Query(context.Background(), q, id)
 	if err != nil {
@@ -118,9 +118,9 @@ func (r *Request) AddReserveRequest(id int64, idService, idOrder, money string) 
 		os.Exit(1)
 	}
 
-	q := `INSERT INTO Reserve (Id, idService, idOrder, money) VALUES ($, $))`
+	q := `INSERT INTO Reserve (Id, idService, idOrder, money) VALUES ($1, $2, $3, $4)`
 
-	_, err = conn.Exec(context.Background(), q)
+	_, err = conn.Exec(context.Background(), q, id, idService, idOrder, money)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
 		os.Exit(1)
