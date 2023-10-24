@@ -17,6 +17,11 @@ func main() {
 	srv := handlers.New()
 	api.RegisterBalanceMsServer(s, srv)
 
+	err := CSV.CreateCSV()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when create log file csv format")
+	}
+
 	fmt.Println(`
 ╔══╗╔══╗─╔╗───╔╗╔══╗
 ╚╗╔╝║╔╗╚╗║║──╔╝║╚═╗║

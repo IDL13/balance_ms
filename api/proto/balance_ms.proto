@@ -40,7 +40,7 @@ message ReserveResponse {
 }
 
 message GetRevenueRequest {
-
+  int64 id = 1;
 }
 
 message GetRevenueResponse {
