@@ -136,7 +136,6 @@ func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
 	}
 
 	q := `SELECT id, idservice, money FROM Reserve`
-	del := `DELETE FROM reserve WHERE id = `
 
 	row, err := conn.Query(context.Background(), q)
 	if err != nil {
@@ -161,7 +160,32 @@ func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
 			os.Exit(1)
 		}
 
+		err = DellRequest(d.Id)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		request = append(request, d)
 	}
 	return request, nil
+}
+
+func DellRequest(id int) error {
+	conf := config.New().GetConf()
+
+	conn, err := postgresql.NewClient(*conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
+		os.Exit(1)
+	}
+
+	del := `DELETE FROM reserve WHERE id = $1`
+
+	_, err = conn.Query(context.Background(), del, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
+		os.Exit(1)
+	}
+
+	return nil
 }

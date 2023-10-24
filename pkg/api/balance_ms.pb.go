@@ -4,7 +4,7 @@
 // 	protoc        v3.14.0
 // source: api/proto/balance_ms.proto
 
-package _
+package api
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
