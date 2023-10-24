@@ -66,7 +66,7 @@ func (r *Request) CreateReserveTableRequest() error {
 	return nil
 }
 
-func (r *Request) AddBalanceRequest(id int64, balance string) (err error) {
+func (r Request) AddBalanceRequest(id int64, balance string) (err error) {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -97,14 +97,18 @@ func (r *Request) GetBalanceRequest(id int64) (b string, err error) {
 		os.Exit(1)
 	}
 
-	q := `SELECT balance FROM Users WHERE Id = $1`
+	q := `SELECT balance FROM users WHERE id = $1`
 
-	row, err := conn.Query(context.Background(), q, id)
+	row := conn.QueryRow(context.Background(), q, id)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
 		os.Exit(1)
 	}
-	row.Scan(&balance)
+
+	err = row.Scan(&balance)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return balance, nil
 }

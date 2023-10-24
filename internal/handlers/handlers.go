@@ -51,7 +51,7 @@ func (s *GRPCServer) Reserve(ctx context.Context, req *api.ReserveRequest) (*api
 }
 
 // GetRevenue ...
-func (s *GRPCServer) GetRevenue(context.Context, *api.GetRevenueRequest) (*api.GetRevenueResponse, error) {
+func (s *GRPCServer) GetRevenue(ctx context.Context, req *api.GetRevenueRequest) (*api.GetRevenueResponse, error) {
 	re, err := s.request.GetReserveRequest()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error the during execut AddReserve request")
