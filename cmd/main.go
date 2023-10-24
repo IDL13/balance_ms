@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -13,7 +13,8 @@ import (
 
 func main() {
 	s := grpc.NewServer()
-	srv := &handlers.GRPCServer{}
+	//srv := &handlers.GRPCServer{request: requests.New()}
+	srv := handlers.New()
 	api.RegisterBalanceMsServer(s, srv)
 
 	fmt.Println(`

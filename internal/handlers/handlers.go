@@ -8,10 +8,16 @@ import (
 	"os"
 )
 
+func New() *GRPCServer {
+	return &GRPCServer{
+		request: requests.New(),
+	}
+}
+
 // GRPCServer ...
 type GRPCServer struct {
 	api.UnimplementedBalanceMsServer
-	request requests.Request
+	request *requests.Request
 }
 
 // AddBalance ...

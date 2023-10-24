@@ -75,7 +75,7 @@ func (r *Request) AddBalanceRequest(id int64, balance string) (err error) {
 		os.Exit(1)
 	}
 
-	q := `INSERT INTO Users (Id, balance) VALUES ($1, $2)`
+	q := `INSERT INTO users (id, balance) VALUES ($1, $2)`
 
 	_, err = conn.Exec(context.Background(), q, id, balance)
 	if err != nil {
@@ -118,7 +118,7 @@ func (r *Request) AddReserveRequest(id int64, idService, idOrder, money string) 
 		os.Exit(1)
 	}
 
-	q := `INSERT INTO Reserve (Id, idService, idOrder, money) VALUES ($1, $2, $3, $4)`
+	q := `INSERT INTO reserve (Id, idService, idOrder, money) VALUES ($1, $2, $3, $4)`
 
 	_, err = conn.Exec(context.Background(), q, id, idService, idOrder, money)
 	if err != nil {

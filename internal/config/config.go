@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -20,10 +21,14 @@ type Config struct {
 }
 
 func (c *Config) GetConf() *Config {
-	info, err := os.ReadFile("./../conf.yaml")
+	info, err := os.ReadFile("./conf.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
-	yaml.Unmarshal(info, c)
+	err = yaml.Unmarshal(info, c)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "error in GetConfig when unmarshaling data")
+		os.Exit(1)
+	}
 	return c
 }
