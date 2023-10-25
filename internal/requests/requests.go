@@ -3,14 +3,15 @@ package requests
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/IDL13/balance_ms/internal/CSV"
 	"github.com/IDL13/balance_ms/internal/config"
 	"github.com/IDL13/balance_ms/pkg/postgresql"
-	"os"
 )
 
-func New() *Request {
-	return &Request{
+func New() Request {
+	return &request{
 		conf: config.New(),
 	}
 }
@@ -22,51 +23,19 @@ type DataStruct struct {
 	Money     string
 }
 
-type Request struct {
+//go:generate mockgen -source=requests.go -destination=../../mock/mock.go -package=mock_serv
+type Request interface {
+	AddBalanceRequest(id int64, balance string) (err error)
+	GetBalanceRequest(id int64) (b string, err error)
+	AddReserveRequest(id int64, idService, idOrder, money string) error
+	GetReserveRequest() (re []DataStruct, err error)
+}
+
+type request struct {
 	conf *config.Config
 }
 
-func (r *Request) CreateUserTableRequest() error {
-	conf := r.conf.GetConf()
-
-	conn, err := postgresql.NewClient(*conf)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
-		os.Exit(1)
-	}
-
-	q := `CREATE TABLE Users (Id INT NOT NULL AUTO_INCREMENT, balance VARCHAR(255))`
-
-	_, err = conn.Exec(context.Background(), q)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
-		os.Exit(1)
-	}
-
-	return nil
-}
-
-func (r *Request) CreateReserveTableRequest() error {
-	conf := r.conf.GetConf()
-
-	conn, err := postgresql.NewClient(*conf)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
-		os.Exit(1)
-	}
-
-	q := `CREATE TABLE Reserve (Id INT NOT NULL AUTO_INCREMENT, idService VARCHAR(255), idOrder VARCHAR(255), money VARCHAR(255))`
-
-	_, err = conn.Exec(context.Background(), q)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
-		os.Exit(1)
-	}
-
-	return nil
-}
-
-func (r Request) AddBalanceRequest(id int64, balance string) (err error) {
+func (r request) AddBalanceRequest(id int64, balance string) (err error) {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -86,7 +55,7 @@ func (r Request) AddBalanceRequest(id int64, balance string) (err error) {
 	return nil
 }
 
-func (r *Request) GetBalanceRequest(id int64) (b string, err error) {
+func (r *request) GetBalanceRequest(id int64) (b string, err error) {
 	var balance string
 
 	conf := r.conf.GetConf()
@@ -106,7 +75,7 @@ func (r *Request) GetBalanceRequest(id int64) (b string, err error) {
 	return balance, nil
 }
 
-func (r *Request) AddReserveRequest(id int64, idService, idOrder, money string) error {
+func (r *request) AddReserveRequest(id int64, idService, idOrder, money string) error {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -126,7 +95,7 @@ func (r *Request) AddReserveRequest(id int64, idService, idOrder, money string) 
 	return nil
 }
 
-func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
+func (r *request) GetReserveRequest() (re []DataStruct, err error) {
 	conf := r.conf.GetConf()
 
 	conn, err := postgresql.NewClient(*conf)
@@ -168,24 +137,4 @@ func (r *Request) GetReserveRequest() (re []DataStruct, err error) {
 		request = append(request, d)
 	}
 	return request, nil
-}
-
-func DellRequest(id int) error {
-	conf := config.New().GetConf()
-
-	conn, err := postgresql.NewClient(*conf)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
-		os.Exit(1)
-	}
-
-	del := `DELETE FROM reserve WHERE id = $1`
-
-	_, err = conn.Query(context.Background(), del, id)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
-		os.Exit(1)
-	}
-
-	return nil
 }

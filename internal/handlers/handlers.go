@@ -3,9 +3,10 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/IDL13/balance_ms/internal/requests"
 	"github.com/IDL13/balance_ms/pkg/api"
-	"os"
 )
 
 func New() *GRPCServer {
@@ -17,7 +18,7 @@ func New() *GRPCServer {
 // GRPCServer ...
 type GRPCServer struct {
 	api.UnimplementedBalanceMsServer
-	request *requests.Request
+	request requests.Request
 }
 
 // AddBalance ...
