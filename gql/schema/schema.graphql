@@ -10,6 +10,11 @@ input NewUser {
     balance: String!
 }
 
+type Query {
+    user: User
+    reserve: Reserve
+}
+
 input NewReserve {
     idUser: ID!
     IdService: String!
