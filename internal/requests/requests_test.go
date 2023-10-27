@@ -35,7 +35,7 @@ func TestReserveRequest(t *testing.T) {
 	var id int64 = 2
 	var idService string = "2"
 	var idOrder string = "2"
-	var money string = "100"
+	var money string = "200"
 
 	req := New()
 
