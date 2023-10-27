@@ -29,6 +29,8 @@ type Request interface {
 	GetBalanceRequest(id int64) (b string, err error)
 	AddReserveRequest(id int64, idService, idOrder, money string) error
 	GetReserveRequest() (re []DataStruct, err error)
+	DelUser(id int64)
+	DelReserve(id int64)
 }
 
 type request struct {
@@ -137,4 +139,40 @@ func (r *request) GetReserveRequest() (re []DataStruct, err error) {
 		request = append(request, d)
 	}
 	return request, nil
+}
+
+func (r *request) DelUser(id int64) {
+	conf := r.conf.GetConf()
+
+	conn, err := postgresql.NewClient(*conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
+		os.Exit(1)
+	}
+
+	q := `DELETE FROM users WHERE id = $1`
+
+	_, err = conn.Query(context.Background(), q, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
+		os.Exit(1)
+	}
+}
+
+func (r *request) DelReserve(id int64) {
+	conf := r.conf.GetConf()
+
+	conn, err := postgresql.NewClient(*conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to connect to the database:%e", err)
+		os.Exit(1)
+	}
+
+	q := `DELETE FROM reserve WHERE id = $1`
+
+	_, err = conn.Query(context.Background(), q, id)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when trying to exec data in database:%e", err)
+		os.Exit(1)
+	}
 }
