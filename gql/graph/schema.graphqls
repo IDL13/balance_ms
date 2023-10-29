@@ -2,27 +2,48 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
+type User {
+    id: ID!
+    balance: String!
 }
 
-type User {
-  id: ID!
-  name: String!
+type Reserve {
+    idUser: ID!
+    IdService: String!
+    IdOrder: String!
+    money: String!
 }
 
 type Query {
-  todos: [Todo!]!
+    user: User
+    reserve: Reserve
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input NewUser {
+    id: ID!
+    balance: String!
+}
+
+
+input NewReserve {
+    idUser: ID!
+    IdService: String!
+    IdOrder: String!
+    money: String!
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+    addBalance(input: NewUser!): Int!
 }
+
+# type Mutation {
+#     getBalance(input: NewUser!): String!
+# }
+
+# type Mutation {
+#     addReserve(input: NewReserve!): Int!
+# }
+
+# type Mutation {
+#     getReserve(input: NewReserve!): Int!
+# }
