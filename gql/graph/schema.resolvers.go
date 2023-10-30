@@ -7,17 +7,68 @@ package graph
 import (
 	"context"
 	"fmt"
-	"gql/graph/model"
+	"strconv"
+
+	"github.com/IDL13/balance_ms/gql/graph/model"
+	"github.com/IDL13/balance_ms/pkg/api"
 )
 
 // AddBalance is the resolver for the addBalance field.
 func (r *mutationResolver) AddBalance(ctx context.Context, input model.NewUser) (int, error) {
-	panic(fmt.Errorf("not implemented: AddBalance - addBalance"))
+	id, _ := strconv.Atoi(input.ID)
+	req := &api.AddBalanceRequest{
+		Id:    int64(id),
+		Money: input.Balance,
+	}
+	r.Resolver.handler.AddBalance(context.Background(), req)
+	return 0, nil
+}
+
+// GetBalance is the resolver for the getBalance field.
+func (r *mutationResolver) GetBalance(ctx context.Context, input model.NewUser) (string, error) {
+	id, _ := strconv.Atoi(input.ID)
+	req := &api.GetBalanceRequest{
+		Id: int64(id),
+	}
+	balance, err := r.Resolver.handler.GetBalance(context.Background(), req)
+	if err != nil {
+		panic(err)
+	}
+	return balance.Balance, nil
+}
+
+// AddReserve is the resolver for the addReserve field.
+func (r *mutationResolver) AddReserve(ctx context.Context, input model.NewReserve) (int, error) {
+	id, _ := strconv.Atoi(input.IDUser)
+	req := &api.ReserveRequest{
+		Id:        int64(id),
+		IdService: input.IDService,
+		IdOrder:   input.IDOrder,
+		Money:     input.Money,
+	}
+	r.Resolver.handler.Reserve(context.Background(), req)
+	return 0, nil
+}
+
+// GetReserve is the resolver for the getReserve field.
+func (r *mutationResolver) GetReserve(ctx context.Context, input model.NewReserve) (int, error) {
+	id, _ := strconv.Atoi(input.IDUser)
+	req := &api.GetRevenueRequest{
+		Id: int64(id),
+	}
+	resp, err := r.Resolver.handler.GetRevenue(context.Background(), req)
+	if err != nil {
+		panic(err)
+	}
+	return int(resp.Status), nil
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	return &model.User{
+		ID:      "1",
+		Balance: "100",
+	}, nil
 }
 
 // Reserve is the resolver for the reserve field.
@@ -40,9 +91,3 @@ type queryResolver struct{ *Resolver }
 //   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //     it when you're done.
 //   - You have helper methods in this file. Move them out to keep these resolver files clean.
-// func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-// 	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
-// }
-// func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-// 	panic(fmt.Errorf("not implemented: Todos - todos"))
-// }
